@@ -1,0 +1,32 @@
+name: Build package
+on: [push, pull_request]
+jobs:
+  build:
+    name: Golang Binary Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Go 1.15
+        uses: actions/setup-go@v1
+        with:
+          go-version: 1.15
+
+      - name: Check out source code
+        uses: actions/checkout@v1
+
+      - name: Build for unix systems
+        run: make pack_unix
+
+      - name: Build for windows systems
+        run: make pack_win
+
+      - name: Publish UNIX Build
+        uses: actions/upload-artifact@v2
+        with:
+          name: task-runner-unix
+          path: build/task-runner
+
+      - name: Publish Windows Build
+        uses: actions/upload-artifact@v2
+        with:
+          name: task-runner-windows
+          path: build/task-runner.exe
